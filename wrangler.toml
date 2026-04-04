@@ -1,0 +1,15 @@
+name = "blackboard-blackroad"
+main = "src/worker.js"
+compatibility_date = "2026-03-31"
+
+[ai]
+binding = "AI"
+
+[[routes]]
+pattern = "blackboard.blackroad.io/*"
+zone_name = "blackroad.io"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "blackboard"
+database_id = "bcc78f33-b052-4cb2-bcfb-db5cd3c08472"
