@@ -1,15 +1,18 @@
 name = "blackboard-blackroad"
-main = "src/worker.js"
-compatibility_date = "2026-03-31"
-
-[ai]
-binding = "AI"
-
+main = "src/index.ts"
+compatibility_date = "2025-01-01"
+compatibility_flags = ["nodejs_compat"]
 [[routes]]
 pattern = "blackboard.blackroad.io/*"
 zone_name = "blackroad.io"
-
+[vars]
+ENVIRONMENT = "production"
+SERVICE_NAME = "blackboard"
+VERSION = "2.0.0"
+[[kv_namespaces]]
+binding = "STORE"
+id = "acad0b2fb96a4e74a6479898afaa7ea8"
 [[d1_databases]]
 binding = "DB"
-database_name = "blackboard"
-database_id = "bcc78f33-b052-4cb2-bcfb-db5cd3c08472"
+database_name = "blackroad-os-main"
+database_id = "e2c6dcd9-c21a-48ac-8807-7b3a6881c4f7"
