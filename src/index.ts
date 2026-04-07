@@ -37,7 +37,7 @@ h1{font-size:2rem;font-weight:700;background:var(--grad);-webkit-background-clip
 .math-table td{padding:5px 8px;border-bottom:1px solid #0d0d0d;color:#ccc}
 .math-table tr:hover td{background:#0d0d0d}
 .n-col{color:var(--purple)}
-.val-col{color:#22c55e}
+.val-col{color:#e0e0e0}
 .canvas-card{grid-column:1/-1}
 canvas{width:100%;height:240px;border-radius:6px;background:#050505}
 .formula-box{background:#050505;border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:10px;font-family:'JetBrains Mono',monospace;font-size:.82rem;color:#ccc;line-height:2}
