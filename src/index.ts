@@ -9,7 +9,7 @@ function page(codex: any[], math: any[]): Response {
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-:root{--bg:#030303;--card:#0a0a0a;--border:#111;--text:#f0f0f0;--sub:#444;--purple:#CC00AA;--grad:linear-gradient(135deg,#CC00AA,#8844FF,#4488FF)}
+:root{--bg:#030303;--card:#0a0a0a;--border:#111;--text:#f0f0f0;--sub:#444;--purple:#FF00D4;--grad:linear-gradient(135deg,#FF00D4,#7800FF,#3E84FF)}
 html,body{min-height:100vh;background:var(--bg);color:var(--text);font-family:'Space Grotesk',sans-serif}
 .grad-bar{height:2px;background:var(--grad)}
 .wrap{max-width:1100px;margin:0 auto;padding:32px 20px}
@@ -88,7 +88,7 @@ input:focus{border-color:var(--purple)}
       {label:"Ramanujan Shadow of ΣG(n)",desc:"Direct Euler-Maclaurin computation required. −1/(12e) claim retracted.",status:"open"},
       {label:"P vs NP separation",desc:"Conjecture: separation = 1/e via G(n) structure",status:"conjecture"},
       {label:"Product Formula",desc:"∏G(k) = (n!)²/(n+1)^n",status:"proven"},
-    ].map(p=>`<div style="padding:9px 0;border-bottom:1px solid #0d0d0d;font-size:.8rem"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px"><strong>${p.label}</strong><span style="font-size:.62rem;font-family:'JetBrains Mono',monospace;padding:1px 7px;border-radius:3px;background:${p.status==='proven'?'rgba(0,230,118,.1)':p.status==='open'?'rgba(204,0,170,.1)':'rgba(245,166,35,.1)'};color:${p.status==='proven'?'#00E676':p.status==='open'?'#CC00AA':'#F5A623'};border:1px solid currentColor">${p.status}</span></div><div style="font-size:.72rem;color:var(--sub)">${p.desc}</div></div>`).join('')}
+    ].map(p=>`<div style="padding:9px 0;border-bottom:1px solid #0d0d0d;font-size:.8rem"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px"><strong>${p.label}</strong><span style="font-size:.62rem;font-family:'JetBrains Mono',monospace;padding:1px 7px;border-radius:3px;background:${p.status==='proven'?'rgba(0,230,118,.1)':p.status==='open'?'rgba(204,0,170,.1)':'rgba(245,166,35,.1)'};color:${p.status==='proven'?'#00E676':p.status==='open'?'#FF00D4':'#FF6B2B'};border:1px solid currentColor">${p.status}</span></div><div style="font-size:.72rem;color:var(--sub)">${p.desc}</div></div>`).join('')}
   </div>
 </div>
 </div>
@@ -117,7 +117,7 @@ if(mathData.length>1){
   var range=maxV-minV||1;
   // Gradient
   var grad=ctx.createLinearGradient(0,0,W,0);
-  grad.addColorStop(0,'#CC00AA');grad.addColorStop(0.5,'#8844FF');grad.addColorStop(1,'#4488FF');
+  grad.addColorStop(0,'#FF00D4');grad.addColorStop(0.5,'#7800FF');grad.addColorStop(1,'#3E84FF');
   ctx.strokeStyle=grad;ctx.lineWidth=2;ctx.beginPath();
   mathData.forEach(function(m,i){
     var x=i/(mathData.length-1)*W;
