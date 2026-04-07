@@ -5,7 +5,15 @@ async function track(env: Env, req: Request, path: string) { const cf=(req as an
 
 function page(codex: any[], math: any[]): Response {
   const html=`<!DOCTYPE html><html lang="en"><head>
-<meta charset="UTF-8"><title>Blackboard — Math & Research</title>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Blackboard — Math & Research</title>
+<meta name="description" content="Mathematical research workspace. Amundson sequence, G(n) computation, and codex.">
+<link rel="canonical" href="https://blackboard.blackroad.io/">
+<meta property="og:title" content="Blackboard — Math & Research">
+<meta property="og:description" content="Mathematical research workspace. Amundson sequence, G(n) computation, and codex.">
+<meta property="og:url" content="https://blackboard.blackroad.io/">
+<meta property="og:type" content="website">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Blackboard","url":"https://blackboard.blackroad.io/","description":"Mathematical research workspace. Amundson sequence, G(n) computation, and codex.","applicationCategory":"EducationalApplication","publisher":{"@type":"Organization","name":"BlackRoad OS, Inc.","url":"https://blackroad.io"}}</script>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
