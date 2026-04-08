@@ -39,7 +39,7 @@ AI-powered creative studio where you and your RoadTrip agents (Pixel for visuals
 
 ## Status
 
-**PLANNED** — canvas.blackroad.io Worker exists | [canvas.blackroad.io](https://canvas.blackroad.io)
+**PLANNED** — blackboard.blackroad.io Worker exists | [blackboard.blackroad.io](https://blackboard.blackroad.io)
 
 ## How It Powers The BlackRoad
 
