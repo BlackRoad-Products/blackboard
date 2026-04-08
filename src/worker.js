@@ -54,8 +54,90 @@ export default {
     const c = {'Access-Control-Allow-Origin':'*','Access-Control-Allow-Methods':'GET,POST,PUT,DELETE,OPTIONS','Access-Control-Allow-Headers':'Content-Type'};
     if (request.method === 'OPTIONS') return new Response(null, {status:204,headers:c});
     if (p === '/' || p === '') return new Response(HTML, {headers:{'Content-Type':'text/html;charset=utf-8','Content-Security-Policy':"frame-ancestors 'self' https://blackroad.io https://*.blackroad.io",...c}});
-    if (p === '/sitemap.xml') return new Response(`<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n  <url><loc>https://blackboard.blackroad.io/</loc><changefreq>daily</changefreq><priority>1.0</priority></url>\n</urlset>`, {headers:{'Content-Type':'application/xml',...c}});
-    if (p === '/health') return j({ok:true,service:'blackboard'},c);
+    // ─── Creative Campaign Inspiration Pages ───
+    const BB_CAMPAIGNS = [
+      { slug: 'product-launch', name: 'Product Launch Campaign', category: 'Launch', description: 'Announce your new product with a multi-channel campaign that builds anticipation and drives first-day sales.', elements: ['Hero image or video', 'Launch countdown timer', 'Feature highlights grid', 'CTA button (Pre-order / Buy Now)', 'Social proof testimonials', 'Email announcement sequence'], platforms: ['Instagram', 'Facebook', 'Email', 'Landing Page'], estimatedReach: '10K-50K impressions with $500 ad spend', related: ['countdown-campaign', 'limited-edition', 'partnership-announcement'] },
+      { slug: 'seasonal-sale', name: 'Seasonal Sale Campaign', category: 'Seasonal', description: 'Drive revenue with time-limited seasonal promotions tied to holidays, back-to-school, or end-of-year events.', elements: ['Sale banner with discount percentage', 'Product grid with strike-through pricing', 'Urgency countdown timer', 'Email drip with escalating discounts', 'Social media carousel of deals'], platforms: ['Instagram', 'Facebook', 'Email', 'Google Ads'], estimatedReach: '20K-100K impressions during peak season', related: ['countdown-campaign', 'holiday-campaign', 'limited-edition'] },
+      { slug: 'brand-awareness', name: 'Brand Awareness Campaign', category: 'Engagement', description: 'Introduce your brand to new audiences with storytelling-driven content that communicates your values and mission.', elements: ['Brand story video (60-90 seconds)', 'Mission statement graphic', 'Team behind-the-scenes photos', 'Values-driven social posts', 'Shareable infographic about your impact'], platforms: ['Instagram', 'YouTube', 'LinkedIn', 'TikTok'], estimatedReach: '50K-200K impressions with consistent posting', related: ['behind-the-scenes', 'community-spotlight', 'video-testimonial'] },
+      { slug: 'user-generated-content', name: 'User-Generated Content Campaign', category: 'Engagement', description: 'Let your customers create content for you. UGC builds trust and authenticity that branded content cannot match.', elements: ['Branded hashtag', 'UGC submission form or email', 'Customer photo gallery', 'Re-share templates for stories', 'Monthly UGC winner announcement', 'Permission and rights management'], platforms: ['Instagram', 'TikTok', 'Twitter'], estimatedReach: '5K-30K organic impressions per featured post', related: ['social-contest', 'community-spotlight', 'video-testimonial'] },
+      { slug: 'influencer-collab', name: 'Influencer Collaboration Campaign', category: 'Social', description: 'Partner with creators and influencers to reach their engaged audiences with authentic product endorsements.', elements: ['Influencer brief document', 'Product seeding package', 'Branded content guidelines', 'Affiliate tracking links', 'Cross-promotion schedule', 'Performance reporting dashboard'], platforms: ['Instagram', 'TikTok', 'YouTube', 'Twitter'], estimatedReach: '10K-500K depending on influencer tier', related: ['partnership-announcement', 'user-generated-content', 'social-contest'] },
+      { slug: 'email-drip', name: 'Email Drip Campaign', category: 'Engagement', description: 'Nurture leads and onboard new users with a sequence of automated, perfectly-timed email messages.', elements: ['Welcome email with value proposition', 'Day 2: feature highlight email', 'Day 5: social proof and case study', 'Day 7: special offer or trial extension', 'Day 14: re-engagement check-in', 'Segmentation rules and triggers'], platforms: ['Email'], estimatedReach: '30-50% open rate with good segmentation', related: ['product-launch', 'tutorial-series', 'case-study'] },
+      { slug: 'social-contest', name: 'Social Media Contest', category: 'Social', description: 'Boost engagement and followers with a creative contest that encourages sharing, tagging, and participation.', elements: ['Contest announcement graphic', 'Entry rules and guidelines', 'Hashtag for tracking entries', 'Daily reminder stories', 'Winner announcement post', 'Prize showcase visual'], platforms: ['Instagram', 'TikTok', 'Twitter', 'Facebook'], estimatedReach: '15K-80K impressions with viral potential', related: ['user-generated-content', 'influencer-collab', 'milestone-celebration'] },
+      { slug: 'retargeting-ads', name: 'Retargeting Ad Campaign', category: 'Engagement', description: 'Re-engage visitors who left without converting. Show them personalized ads based on their browsing behavior.', elements: ['Dynamic product ads', 'Abandoned cart reminder creative', 'Special discount for returning visitors', 'Testimonial-based ad variations', 'Frequency cap settings', 'A/B test variations'], platforms: ['Facebook', 'Google Ads', 'Instagram'], estimatedReach: '2-5x higher conversion rate than cold ads', related: ['comparison-ad', 'email-drip', 'product-launch'] },
+      { slug: 'video-testimonial', name: 'Video Testimonial Campaign', category: 'Video', description: 'Feature real customers sharing their experience. Video testimonials convert 80% better than text reviews.', elements: ['Customer interview video (30-60 sec)', 'Quote overlay graphics', 'Before and after comparison', 'Star rating visual', 'CTA overlay at video end', 'Short-form cuts for stories'], platforms: ['YouTube', 'Instagram', 'Facebook', 'Landing Page'], estimatedReach: '5K-25K views per testimonial', related: ['case-study', 'user-generated-content', 'behind-the-scenes'] },
+      { slug: 'behind-the-scenes', name: 'Behind the Scenes Campaign', category: 'Engagement', description: 'Show the human side of your brand with authentic behind-the-scenes content from your team and process.', elements: ['Day-in-the-life video or photo series', 'Team member spotlight', 'Process or making-of content', 'Workspace tour', 'Bloopers and outtakes reel', 'Q&A with team members'], platforms: ['Instagram', 'TikTok', 'YouTube', 'LinkedIn'], estimatedReach: '3K-15K impressions with high engagement rates', related: ['brand-awareness', 'community-spotlight', 'video-testimonial'] },
+      { slug: 'event-promotion', name: 'Event Promotion Campaign', category: 'Launch', description: 'Fill seats at your next event with a multi-touchpoint promotion campaign spanning weeks before the date.', elements: ['Event announcement graphic', 'Speaker or performer lineup', 'Early bird ticket offer', 'Countdown to event posts', 'Live event teaser video', 'Post-event recap content'], platforms: ['Instagram', 'Facebook', 'Email', 'LinkedIn', 'Eventbrite'], estimatedReach: '10K-40K impressions per promotion cycle', related: ['countdown-campaign', 'partnership-announcement', 'social-contest'] },
+      { slug: 'milestone-celebration', name: 'Milestone Celebration Campaign', category: 'Engagement', description: 'Celebrate company milestones with your community. Anniversaries, user counts, and achievements drive engagement.', elements: ['Milestone announcement graphic', 'Journey timeline infographic', 'Thank you video from founders', 'Community appreciation discount', 'User story highlights', 'Interactive poll or quiz'], platforms: ['Instagram', 'Twitter', 'LinkedIn', 'Email'], estimatedReach: '5K-20K impressions with high share rate', related: ['community-spotlight', 'brand-awareness', 'social-contest'] },
+      { slug: 'tutorial-series', name: 'Tutorial Series Campaign', category: 'Video', description: 'Educate your audience with a series of how-to tutorials. Position your brand as the expert in your space.', elements: ['Numbered episode thumbnails', 'Step-by-step tutorial video', 'Companion blog post or PDF', 'Playlist or series landing page', 'Next episode teaser', 'Downloadable resources'], platforms: ['YouTube', 'Instagram', 'Blog', 'Email'], estimatedReach: '5K-30K views per episode with series momentum', related: ['case-study', 'email-drip', 'video-testimonial'] },
+      { slug: 'case-study', name: 'Case Study Campaign', category: 'Engagement', description: 'Showcase real results from real customers. Case studies provide the proof that moves prospects to purchase.', elements: ['Problem-solution-result framework', 'Key metrics and data points', 'Customer quote pull-outs', 'Before and after visuals', 'Downloadable PDF version', 'Social media snippet cards'], platforms: ['LinkedIn', 'Blog', 'Email', 'Landing Page'], estimatedReach: '2K-10K qualified views with high conversion intent', related: ['video-testimonial', 'tutorial-series', 'comparison-ad'] },
+      { slug: 'comparison-ad', name: 'Comparison Ad Campaign', category: 'Engagement', description: 'Show how your product stacks up against alternatives. Transparent comparisons build trust and aid decision-making.', elements: ['Side-by-side feature comparison table', 'Pricing comparison graphic', 'Competitive advantage callouts', 'Customer switching story', 'Risk-free trial CTA', 'FAQ addressing competitor concerns'], platforms: ['Google Ads', 'LinkedIn', 'Landing Page', 'Blog'], estimatedReach: '5K-20K high-intent impressions', related: ['case-study', 'retargeting-ads', 'product-launch'] },
+      { slug: 'countdown-campaign', name: 'Countdown Campaign', category: 'Launch', description: 'Build anticipation with a daily countdown to your launch, sale, or event. Each day reveals something new.', elements: ['Daily countdown graphic (Day 7, 6, 5...)', 'Daily teaser or hint reveal', 'Email sequence matching countdown', 'Final day launch announcement', 'Live countdown timer widget', 'Early access for engaged followers'], platforms: ['Instagram', 'Email', 'Twitter', 'Landing Page'], estimatedReach: '10K-30K cumulative impressions over countdown period', related: ['product-launch', 'event-promotion', 'seasonal-sale'] },
+      { slug: 'limited-edition', name: 'Limited Edition Campaign', category: 'Seasonal', description: 'Create urgency with limited-quantity or limited-time products. Scarcity drives action and collectibility drives loyalty.', elements: ['Limited edition product mockup', 'Scarcity counter (Only X left)', 'Special packaging reveal', 'Numbered edition details', 'VIP early access email', 'Sold out follow-up waitlist'], platforms: ['Instagram', 'Email', 'Landing Page'], estimatedReach: '5K-25K impressions with high urgency engagement', related: ['seasonal-sale', 'countdown-campaign', 'product-launch'] },
+      { slug: 'partnership-announcement', name: 'Partnership Announcement', category: 'Launch', description: 'Announce a new partnership or collaboration with a co-branded campaign that reaches both audiences.', elements: ['Co-branded announcement graphic', 'Joint press release', 'Partner introduction video', 'Combined offer or bundle', 'Cross-promotion social posts', 'Joint webinar or live event'], platforms: ['LinkedIn', 'Twitter', 'Email', 'Blog'], estimatedReach: '10K-50K combined audience reach', related: ['influencer-collab', 'event-promotion', 'brand-awareness'] },
+      { slug: 'community-spotlight', name: 'Community Spotlight Campaign', category: 'Social', description: 'Highlight community members, power users, or local heroes. Spotlights build belonging and encourage participation.', elements: ['Member profile card', 'Interview or Q&A format', 'Achievement or story highlight', 'Community nomination form', 'Weekly or monthly spotlight schedule', 'Spotlight archive page'], platforms: ['Instagram', 'LinkedIn', 'Blog', 'Email'], estimatedReach: '3K-12K impressions with strong community engagement', related: ['user-generated-content', 'milestone-celebration', 'behind-the-scenes'] },
+      { slug: 'holiday-campaign', name: 'Holiday Campaign', category: 'Seasonal', description: 'Capitalize on holiday shopping seasons with themed content, special offers, and festive branding.', elements: ['Holiday-themed brand graphics', 'Gift guide carousel', 'Special holiday pricing banner', 'Shipping deadline reminders', 'Holiday greeting video', 'New Year preview teaser'], platforms: ['Instagram', 'Facebook', 'Email', 'Google Ads', 'Pinterest'], estimatedReach: '20K-100K impressions during holiday peak', related: ['seasonal-sale', 'limited-edition', 'countdown-campaign'] },
+    ];
+
+    if (p.startsWith('/inspiration/') && p !== '/inspiration/') {
+      const slug = p.replace('/inspiration/', '').replace(/\/$/, '');
+      const campaign = BB_CAMPAIGNS.find(c2 => c2.slug === slug);
+      if (!campaign) return new Response('Not Found', {status:404});
+      const platformBadges = campaign.platforms.map(pl=>`<span style="display:inline-block;padding:4px 12px;background:#1a1a2e;border:1px solid #333;border-radius:20px;font-size:13px;margin:3px">${pl}</span>`).join('');
+      const elementsHtml = campaign.elements.map(e=>`<li style="padding:8px 0;border-bottom:1px solid #1a1a2e;display:flex;align-items:center;gap:8px"><span style="width:6px;height:6px;background:#F5A623;border-radius:50%;flex-shrink:0"></span>${e}</li>`).join('');
+      const relatedHtml = campaign.related.map(r => { const rc = BB_CAMPAIGNS.find(c2 => c2.slug === r); return rc ? `<a href="/inspiration/${r}" style="display:inline-block;padding:8px 16px;background:#1a1a2e;border:1px solid #333;border-radius:8px;color:#ccc;text-decoration:none;margin:4px">${rc.name}</a>` : ''; }).join('');
+      const pageHtml = `<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${campaign.name} - Campaign Inspiration | BlackBoard by BlackRoad</title><meta name="description" content="${campaign.description}"><link rel="canonical" href="https://blackboard.blackroad.io/inspiration/${campaign.slug}"><meta property="og:title" content="${campaign.name} | BlackBoard"><meta property="og:description" content="${campaign.description}"><meta property="og:url" content="https://blackboard.blackroad.io/inspiration/${campaign.slug}"><meta property="og:type" content="article"><meta property="og:site_name" content="BlackBoard by BlackRoad"><script type="application/ld+json">${JSON.stringify({"@context":"https://schema.org","@type":"CreativeWork","name":campaign.name,"description":campaign.description,"url":"https://blackboard.blackroad.io/inspiration/"+campaign.slug,"genre":campaign.category,"publisher":{"@type":"Organization","name":"BlackRoad OS, Inc."}})}</script><style>*{margin:0;padding:0;box-sizing:border-box}body{background:#0a0a1a;color:#e0e0e0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.7}a{color:#7B93DB}.container{max-width:800px;margin:0 auto;padding:40px 20px}.badge{display:inline-block;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:600;background:#1a1a2e;border:1px solid #333;margin-bottom:16px}.section{margin:32px 0}.section h2{font-size:20px;margin-bottom:12px;color:#fff}ul.elements{list-style:none;padding:0}.reach-box{background:#111;border:1px solid #222;border-radius:12px;padding:20px;margin:24px 0}.cta{display:inline-block;padding:14px 32px;background:linear-gradient(135deg,#FF1D6C,#F5A623);color:#fff;border-radius:12px;text-decoration:none;font-weight:600;margin-top:24px}.nav{padding:20px;border-bottom:1px solid #1a1a2e;display:flex;justify-content:space-between;align-items:center}.nav a{color:#ccc;text-decoration:none}</style></head><body><nav class="nav"><a href="/">BlackBoard</a><a href="/inspiration">Campaign Ideas</a></nav><div class="container"><span class="badge">${campaign.category}</span><h1 style="font-size:36px;margin-bottom:16px">${campaign.name}</h1><p style="font-size:18px;color:#aaa;margin-bottom:24px">${campaign.description}</p><div class="section"><h2>Platforms</h2><div>${platformBadges}</div></div><div class="section"><h2>Campaign Elements</h2><ul class="elements">${elementsHtml}</ul></div><div class="reach-box"><div style="font-size:12px;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Estimated Reach</div><div style="font-size:20px;color:#F5A623">${campaign.estimatedReach}</div></div><div class="section"><h2>Related Campaigns</h2><div>${relatedHtml}</div></div><div style="text-align:center;margin-top:40px"><a href="/" class="cta">Design in BlackBoard</a></div></div><footer style="text-align:center;padding:40px;color:#555;font-size:13px;border-top:1px solid #1a1a2e;margin-top:60px">&#169; 2025-2026 BlackRoad OS, Inc. All rights reserved.</footer><script>(function(){var d={path:location.pathname,ref:document.referrer,w:screen.width,h:screen.height,t:Date.now()};navigator.sendBeacon&&navigator.sendBeacon('/api/analytics',JSON.stringify(d))})()</script></body></html>`;
+      return new Response(pageHtml, {headers:{'Content-Type':'text/html;charset=utf-8'}});
+    }
+
+    if (p === '/inspiration' || p === '/inspiration/') {
+      const rows = BB_CAMPAIGNS.map(ca=>`<tr><td style="padding:12px"><a href="/inspiration/${ca.slug}" style="color:#7B93DB;text-decoration:none;font-weight:600">${ca.name}</a></td><td style="padding:12px;color:#aaa">${ca.category}</td><td style="padding:12px;color:#888;font-size:13px">${ca.platforms.join(', ')}</td><td style="padding:12px;color:#888;font-size:13px">${ca.estimatedReach}</td></tr>`).join('');
+      const indexHtml = `<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Campaign Inspiration - 20+ Creative Campaign Ideas | BlackBoard by BlackRoad</title><meta name="description" content="Browse 20+ creative campaign templates. Product launches, seasonal sales, social contests, video testimonials, and more. Ready to customize in BlackBoard."><link rel="canonical" href="https://blackboard.blackroad.io/inspiration"><meta property="og:title" content="Campaign Inspiration | BlackBoard by BlackRoad"><meta property="og:description" content="20+ creative campaign templates ready to customize."><meta property="og:url" content="https://blackboard.blackroad.io/inspiration"><meta property="og:type" content="website"><script type="application/ld+json">${JSON.stringify({"@context":"https://schema.org","@type":"CollectionPage","name":"Campaign Inspiration","description":"20+ creative campaign templates","url":"https://blackboard.blackroad.io/inspiration","numberOfItems":BB_CAMPAIGNS.length,"provider":{"@type":"Organization","name":"BlackRoad OS, Inc."}})}</script><style>*{margin:0;padding:0;box-sizing:border-box}body{background:#0a0a1a;color:#e0e0e0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.6}a{color:#7B93DB}.container{max-width:1100px;margin:0 auto;padding:40px 20px}table{width:100%;border-collapse:collapse;margin-top:24px}th{text-align:left;padding:12px;border-bottom:2px solid #333;color:#fff;font-size:13px;text-transform:uppercase;letter-spacing:1px}td{border-bottom:1px solid #1a1a2e}.nav{padding:20px;border-bottom:1px solid #1a1a2e;display:flex;justify-content:space-between;align-items:center}.nav a{color:#ccc;text-decoration:none}.cta{display:inline-block;padding:14px 32px;background:linear-gradient(135deg,#FF1D6C,#F5A623);color:#fff;border-radius:12px;text-decoration:none;font-weight:600;margin-top:32px}</style></head><body><nav class="nav"><a href="/">BlackBoard</a><a href="/inspiration">Campaign Ideas</a></nav><div class="container"><h1 style="font-size:36px;margin-bottom:8px">Campaign Inspiration</h1><p style="color:#aaa;font-size:18px;margin-bottom:24px">${BB_CAMPAIGNS.length} creative campaign templates ready to customize and launch.</p><table><thead><tr><th>Campaign</th><th>Category</th><th>Platforms</th><th>Est. Reach</th></tr></thead><tbody>${rows}</tbody></table><div style="text-align:center;margin-top:48px"><a href="/" class="cta">Design in BlackBoard</a></div></div><footer style="text-align:center;padding:40px;color:#555;font-size:13px;border-top:1px solid #1a1a2e;margin-top:60px">&#169; 2025-2026 BlackRoad OS, Inc. All rights reserved.</footer></body></html>`;
+      return new Response(indexHtml, {headers:{'Content-Type':'text/html;charset=utf-8'}});
+    }
+
+    if (p === '/sitemap.xml') {
+      const campUrls = BB_CAMPAIGNS.map(ca=>'  <url><loc>https://blackboard.blackroad.io/inspiration/'+ca.slug+'</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>').join('\n');
+      return new Response('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n  <url><loc>https://blackboard.blackroad.io/</loc><lastmod>'+new Date().toISOString().split('T')[0]+'</lastmod><changefreq>daily</changefreq><priority>1.0</priority></url>\n  <url><loc>https://blackboard.blackroad.io/inspiration</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>\n'+campUrls+'\n</urlset>', {headers:{'Content-Type':'application/xml'}});
+    }
+
+    if (p === '/robots.txt') {
+      return new Response('User-agent: *\nAllow: /\nAllow: /inspiration/\nSitemap: https://blackboard.blackroad.io/sitemap.xml\n\nUser-agent: GPTBot\nDisallow: /\n\nUser-agent: ChatGPT-User\nDisallow: /\n\nUser-agent: CCBot\nDisallow: /', {headers:{'Content-Type':'text/plain'}});
+    }
+
+    // Analytics tracking
+    if (p === '/api/track' && request.method === 'POST') {
+      try { const body = await request.json(); const cf = request.cf || {};
+        await env.DB.prepare("CREATE TABLE IF NOT EXISTS analytics_events (id INTEGER PRIMARY KEY AUTOINCREMENT, type TEXT DEFAULT 'pageview', path TEXT, referrer TEXT, country TEXT, city TEXT, device TEXT, screen TEXT, scroll_depth INTEGER DEFAULT 0, engagement_ms INTEGER DEFAULT 0, created_at TEXT DEFAULT (datetime('now')))").run();
+        await env.DB.prepare('INSERT INTO analytics_events (type, path, referrer, country, city, device, screen, scroll_depth, engagement_ms) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)').bind(body.type||'pageview', body.path||'/', body.referrer||'', cf.country||'', cf.city||'', body.device||'', body.screen||'', body.scroll||0, body.time||0).run();
+      } catch(e) {}
+      return new Response(JSON.stringify({ok:true}), {headers:{'Content-Type':'application/json'}});
+    }
+
+    // ── Sovereign Analytics ──
+    if (p === '/api/analytics' && request.method === 'POST') {
+      try {
+        const body = await request.json();
+        const cf = request.cf || {};
+        const ip = request.headers.get('CF-Connecting-IP') || '';
+        const ipHash = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(ip + '2026'));
+        const visitor = btoa(String.fromCharCode(...new Uint8Array(ipHash))).slice(0,12);
+        await env.DB.prepare(`CREATE TABLE IF NOT EXISTS br_analytics (id INTEGER PRIMARY KEY AUTOINCREMENT, path TEXT, referrer TEXT, visitor TEXT, country TEXT, city TEXT, screen TEXT, ts TEXT DEFAULT (datetime('now')))`).run();
+        await env.DB.prepare('INSERT INTO br_analytics (path, referrer, visitor, country, city, screen) VALUES (?,?,?,?,?,?)').bind(body.path||'/', body.ref||'', visitor, cf.country||'', cf.city||'', (body.w||0)+'x'+(body.h||0)).run();
+      } catch(e){}
+      return new Response('ok', {headers:{'Access-Control-Allow-Origin':'*'}});
+    }
+    if (p === '/api/analytics/stats') {
+      try {
+        await env.DB.prepare(`CREATE TABLE IF NOT EXISTS br_analytics (id INTEGER PRIMARY KEY AUTOINCREMENT, path TEXT, referrer TEXT, visitor TEXT, country TEXT, city TEXT, screen TEXT, ts TEXT DEFAULT (datetime('now')))`).run();
+        const total = await env.DB.prepare('SELECT COUNT(*) as c FROM br_analytics').first();
+        const unique = await env.DB.prepare('SELECT COUNT(DISTINCT visitor) as c FROM br_analytics').first();
+        const today = await env.DB.prepare("SELECT COUNT(*) as c FROM br_analytics WHERE ts > datetime('now','-1 day')").first();
+        const pages = await env.DB.prepare('SELECT path, COUNT(*) as views FROM br_analytics GROUP BY path ORDER BY views DESC LIMIT 10').all();
+        const countries = await env.DB.prepare('SELECT country, COUNT(*) as c FROM br_analytics WHERE country != "" GROUP BY country ORDER BY c DESC LIMIT 10').all();
+        return new Response(JSON.stringify({total_views:total?.c||0,unique_visitors:unique?.c||0,today:today?.c||0,top_pages:pages?.results||[],top_countries:countries?.results||[]}),{headers:{'Access-Control-Allow-Origin':'*','Content-Type':'application/json'}});
+      } catch(e) { return new Response(JSON.stringify({error:'analytics unavailable'}),{status:500,headers:{'Content-Type':'application/json'}}); }
+    }
+    if (p === '/health' || p === '/api/health') return j({ok:true,service:'blackboard'},c);
 
     try {
       // ─── Schema Init (original tables + new feature tables) ───
@@ -1933,6 +2015,83 @@ export default {
       }
 
 
+      // --- Enhanced: Brand kit ---
+      if (p === '/api/brand') {
+        return j({ brand: {
+          colors: { hot_pink: '#FF1D6C', amber: '#F5A623', electric_blue: '#2979FF', violet: '#9C27B0', green: '#00E676', dark: '#0a0a0a', light: '#f5f5f5' },
+          fonts: { heading: 'Space Grotesk', body: 'system-ui, -apple-system, sans-serif', mono: 'JetBrains Mono, monospace' },
+          tokens: { radius_sm: '6px', radius_md: '10px', radius_lg: '16px', spacing_xs: '4px', spacing_sm: '8px', spacing_md: '16px', spacing_lg: '24px', spacing_xl: '48px' },
+          gradients: { spectrum: 'linear-gradient(90deg, #FF6B2B, #FF2255, #CC00AA, #8844FF, #4488FF, #00D4FF)', pink_blue: 'linear-gradient(135deg, #FF1D6C, #2979FF)' }
+        } }, c);
+      }
+
+      // --- Enhanced: Agent generation ---
+      if (p === '/api/generate' && request.method === 'POST') {
+        const body = await request.json();
+        const { prompt, agent, type } = body;
+        if (!prompt) return j({ error: 'prompt required' }, c, 400);
+        const agentConfig = AGENTS[agent || 'calliope'];
+        if (!agentConfig) return j({ error: 'Unknown agent. Use: calliope, sapphira, thalia, lyra' }, c, 400);
+        let result;
+        if (env.AI) {
+          try {
+            const resp = await env.AI.run('@cf/meta/llama-3.1-8b-instruct', { messages: [{ role: 'system', content: agentConfig.prompt }, { role: 'user', content: prompt }], max_tokens: 500 });
+            result = resp.response;
+          } catch { result = `[${agentConfig.name} is thinking... AI unavailable, here's a direction] For "${prompt}": Focus on clarity, emotion, and brand alignment. Use the BlackRoad visual language — dark backgrounds, bright accent colors, road metaphors.`; }
+        } else { result = `[${agentConfig.name}, ${agentConfig.role}] For "${prompt}": Focus on clarity, emotion, and brand alignment. Use the BlackRoad visual language — dark backgrounds (#0a0a0a), bright accent colors (#FF1D6C, #2979FF), road metaphors. ${type === 'social-post' ? 'Keep it under 280 chars. Hook in first line.' : type === 'visual-direction' ? 'Mood: cinematic night drive. Palette: hot pink accent on dark.' : 'Write with purpose. Every word earns its place.'}`; }
+        earnCoin(body.road_id, 'blackboard_generate', 2).catch(() => {});
+        return j({ agent: agentConfig.name, role: agentConfig.role, type: type || 'general', content: result }, c);
+      }
+
+      // --- Enhanced: Template instantiation ---
+      const tplCreateMatch = p.match(/^\/api\/templates\/(.+)\/create$/);
+      if (tplCreateMatch && request.method === 'POST') {
+        const tpl = DESIGN_TEMPLATES.find(t => t.id === tplCreateMatch[1]);
+        if (!tpl) return j({ error: 'Template not found' }, c, 404);
+        if (env.DB) {
+          const id = crypto.randomUUID().slice(0, 12);
+          await env.DB.prepare("INSERT INTO bb_projects (id, title, type, template_id, content, status) VALUES (?, ?, ?, ?, ?, 'draft')").bind(id, `New ${tpl.name}`, tpl.category, tpl.id, JSON.stringify({ width: tpl.width, height: tpl.height, layout: tpl.layout })).run();
+          return j({ ok: true, project_id: id, template: tpl.name, dimensions: `${tpl.width}x${tpl.height}` }, c, 201);
+        }
+        return j({ ok: true, template: tpl, message: 'Template ready (no DB for persistence)' }, c);
+      }
+
+      // --- Enhanced: Project export ---
+      const exportMatch = p.match(/^\/api\/projects\/(.+)\/export$/);
+      if (exportMatch && request.method === 'POST') {
+        if (!env.DB) return j({ error: 'No DB' }, c, 500);
+        const proj = await env.DB.prepare('SELECT * FROM bb_projects WHERE id = ?').bind(exportMatch[1]).first();
+        if (!proj) return j({ error: 'Project not found' }, c, 404);
+        const body = await request.json().catch(() => ({}));
+        const format = body.format || 'json';
+        stampChain('project_exported', proj.id, `format=${format}`).catch(() => {});
+        earnCoin(body.road_id, 'blackboard_export', 1).catch(() => {});
+        return j({ ok: true, project_id: proj.id, format, title: proj.title, exported_at: new Date().toISOString() }, c);
+      }
+
+      // --- Enhanced: Collaboration ---
+      const inviteMatch = p.match(/^\/api\/projects\/(.+)\/invite$/);
+      if (inviteMatch && request.method === 'POST') {
+        if (!env.DB) return j({ error: 'No DB' }, c, 500);
+        const body = await request.json();
+        const proj = await env.DB.prepare('SELECT * FROM bb_projects WHERE id = ?').bind(inviteMatch[1]).first();
+        if (!proj) return j({ error: 'Project not found' }, c, 404);
+        const collabs = JSON.parse(proj.collaborators || '[]');
+        if (!collabs.includes(body.user_id)) collabs.push(body.user_id);
+        await env.DB.prepare('UPDATE bb_projects SET collaborators = ? WHERE id = ?').bind(JSON.stringify(collabs), inviteMatch[1]).run();
+        return j({ ok: true, collaborators: collabs }, c);
+      }
+
+      const activityMatch = p.match(/^\/api\/projects\/(.+)\/activity$/);
+      if (activityMatch && request.method === 'GET') {
+        if (!env.DB) return j({ activity: [] }, c);
+        try {
+          await env.DB.prepare("CREATE TABLE IF NOT EXISTS bb_activity (id TEXT PRIMARY KEY, project_id TEXT, actor TEXT, action TEXT, details TEXT, created_at TEXT DEFAULT (datetime('now')))").run();
+          const rows = await env.DB.prepare('SELECT * FROM bb_activity WHERE project_id = ? ORDER BY created_at DESC LIMIT 50').bind(activityMatch[1]).all();
+          return j({ activity: rows.results }, c);
+        } catch { return j({ activity: [] }, c); }
+      }
+
       return j({error:'not found'},c,404);
     } catch(e) { return j({error:e.message},c,500); }
   }
@@ -2023,4 +2182,6 @@ async function schedulePost(){const content=document.getElementById('sched-conte
 async function loadSchedule(){const r=await fetch('/api/schedule');const d=await r.json();const list=document.getElementById('schedule-list');list.innerHTML=(d.schedule||[]).map(s=>'<div class="feature-item" style="margin-bottom:6px"><div class="fi-title">'+s.platform+' — '+s.status+'</div><span style="font-size:11px;color:var(--sub)">'+new Date(s.scheduled_at).toLocaleString()+'</span><br><span style="font-size:11px">'+s.content.slice(0,80)+'...</span></div>').join('')}
 
 fetch('/api/stats').then(r=>r.json()).then(d=>{document.getElementById('s-proj').textContent=d.projects||0;document.getElementById('s-gen').textContent=d.total_generations||0;document.getElementById('s-assets').textContent=d.assets||0;document.getElementById('s-sched').textContent=d.scheduled_posts||0}).catch(()=>{});
-</script></body></html>`;
+window.addEventListener('message',function(e){if(e.data</script></script>e.data.type==='blackroad-os:context'){window._osUser=e.data.user;window._osToken=e.data.token;}});if(window.parent!==window)window.parent.postMessage({type:'blackroad-os:request-context'},'*');
+</script><script>!function(){var b=document.createElement("div");b.style.cssText="position:fixed;top:0;left:0;right:0;z-index:99999;background:#0a0a0a;border-bottom:1px solid #1a1a1a;padding:6px 16px;display:flex;align-items:center;justify-content:space-between;font-family:sans-serif";b.innerHTML="<span style=\"font-size:11px;color:#737373\">Part of <a href=\"https://os.blackroad.io\" style=\"color:#f5f5f5;font-weight:600;text-decoration:none\">BlackRoad OS<\/a> \u2014 27 AI agents, 17 products<\/span><a href=\"https://os.blackroad.io\" style=\"font-size:10px;font-weight:600;padding:4px 12px;background:#f5f5f5;color:#000;border-radius:4px;text-decoration:none\">Try Free<\/a>";b.id="br-bar";if(!document.getElementById("br-bar")){document.body.prepend(b);document.body.style.paddingTop=(parseInt(getComputedStyle(document.body).paddingTop)||0)+32+"px"}if(!document.querySelector("[data-cta]")){var f=document.createElement("div");f.dataset.cta="1";f.style.cssText="border-top:1px solid #1a1a1a;padding:24px 16px;text-align:center;background:#0a0a0a;margin-top:32px";f.innerHTML="<div style=\"font-size:14px;font-weight:700;color:#f5f5f5;margin-bottom:6px\">BlackRoad OS<\/div><div style=\"font-size:11px;color:#737373;margin-bottom:12px\">17 products. 27 agents. Free to try.<\/div><a href=\"https://os.blackroad.io\" style=\"display:inline-block;padding:8px 24px;background:#f5f5f5;color:#000;border-radius:6px;font-size:12px;font-weight:600;text-decoration:none\">Open BlackRoad OS<\/a>";document.body.appendChild(f)}}();</script>
+</body></html>`;
