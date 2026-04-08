@@ -1,50 +1,45 @@
 # BlackBoard
 
-*Make it. Post it. The billboard is yours.*
+> **THE CREATIVE STUDIO** — Part of [BlackRoad OS](https://os.blackroad.io)
 
-All-in-one creative studio for ads, videos, infographics, and full campaigns with RoadChain provenance.
-
-## The Ride
-
-Crack open BlackBoard. Ideas hit on the road. Sketch an ad, cut a video, build an infographic, design a campaign — the billboard is yours. Make it messy. Make it perfect. Ship it.
-
-## What It Does
-
-AI-powered creative studio where you and your RoadTrip agents (Pixel for visuals, Cadence for copy) create campaigns that auto-publish to BackRoad, stamp ownership on RoadChain, and earn RoadCoin for every reuse.
-
-## Integrations
-
-| Service | Role |
-|---------|------|
-| **Cloudflare Workers** | Creative engine runtime |
-| **Cloudflare D1** | Asset metadata, project state, campaign history |
-| **Cloudflare R2** | Asset storage — images, videos, templates |
-| **Workers AI** | Text-to-image, AI copywriting, auto-formatting |
-| **Ollama** | Local creative inference on Pi fleet |
-| **RoadChain** | Provenance — every asset hashed at creation |
-| **RoadCoin** | Earn ROAD for published assets, royalties on reuse |
-| **BackRoad** | One-click publish to all social platforms |
-
-## Features
-
-- Single-prompt campaign generator — describe what you want, get variants
-- Multi-format output: Instagram square, TikTok vertical, LinkedIn long-form
-- Real-time collaborative canvas with RoadTrip agents
-- Brand voice lock — upload your brand bible once, enforced forever
-- AI co-pilot: "make this pop more" or "rewrite for Gen Z"
-- A/B testing lab with live performance tracking
-- Template marketplace — sell templates, earn RoadCoin royalties
-- Video + animation studio: text-to-video, storyboard generator
-- RoadChain ownership badges — prove you made it, when you made it
-
-## Status
-
-**PLANNED** — blackboard.blackroad.io Worker exists | [blackboard.blackroad.io](https://blackboard.blackroad.io)
-
-## How It Powers The BlackRoad
-
-BlackBoard is the billboard that turns every idea into something the whole road can see. It feeds directly into BackRoad for distribution and stamps everything on RoadChain.
+[![Live](https://img.shields.io/badge/status-LIVE-brightgreen?style=flat-square)](https://blackboard.blackroad.io)
+[![BlackRoad OS](https://img.shields.io/badge/BlackRoad_OS-18_products-black?style=flat-square)](https://os.blackroad.io)
+[![Agent](https://img.shields.io/badge/agent-Calliope-8844FF?style=flat-square)](https://roadtrip.blackroad.io)
 
 ---
 
-Part of [BlackRoad OS](https://blackroad.io) — Remember the Road. Pave Tomorrow.
+## AI creative studio. Calliope brings narrative structure to your infinite canvas.
+
+**Live at:** [blackboard.blackroad.io](https://blackboard.blackroad.io)  
+**Your agent:** Calliope  
+**Tag:** AI Creative Studio
+
+---
+
+## Connected Products
+
+| Product | URL |
+|---------|-----|
+| [RoadBook](https://roadbook.blackroad.io) | roadbook.blackroad.io |
+| [BackRoad](https://backroad.blackroad.io) | backroad.blackroad.io |
+| [RoadCode](https://roadcode.blackroad.io) | roadcode.blackroad.io |
+| [BlackRoad OS](https://os.blackroad.io) | os.blackroad.io |
+
+---
+
+## The Highway
+
+BlackRoad OS is a sovereign AI operating system — 18 products, 27 agents, one persistent tab.
+
+| | | |
+|---|---|---|
+| [BlackRoad OS](https://os.blackroad.io) | [RoadTrip](https://roadtrip.blackroad.io) | [Roadie](https://roadie.blackroad.io) |
+| [RoadView](https://roadview.blackroad.io) | [RoadWork](https://roadwork.blackroad.io) | [RoadCode](https://roadcode.blackroad.io) |
+| [RoadBook](https://roadbook.blackroad.io) | [RoadChain](https://roadchain.blackroad.io) | [RoadCoin](https://roadcoin.blackroad.io) |
+| [BackRoad](https://backroad.blackroad.io) | [BlackBoard](https://blackboard.blackroad.io) | [CarKeys](https://carkeys.blackroad.io) |
+| [CarPool](https://carpool.blackroad.io) | [OfficeRoad](https://officeroad.blackroad.io) | [OneWay](https://oneway.blackroad.io) |
+| [RoadSide](https://roadside.blackroad.io) | [RoadWorld](https://roadworld.blackroad.io) | [Highway](https://highway.blackroad.io) |
+
+---
+
+> *Remember the Road. Pave Tomorrow.* — [BlackRoad OS, Inc.](https://os.blackroad.io)
