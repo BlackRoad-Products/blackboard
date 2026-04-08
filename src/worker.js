@@ -53,6 +53,10 @@ export default {
     const p = url.pathname;
     const c = {'Access-Control-Allow-Origin':'*','Access-Control-Allow-Methods':'GET,POST,PUT,DELETE,OPTIONS','Access-Control-Allow-Headers':'Content-Type'};
     if (request.method === 'OPTIONS') return new Response(null, {status:204,headers:c});
+    // Studio tools from KV
+    if (p === '/video') { try { const h = await env.STORE.get('video-studio','text'); if(h) return new Response(h,{headers:{'Content-Type':'text/html;charset=UTF-8',...c}}); } catch {} }
+    if (p === '/canvas') { try { const h = await env.STORE.get('canvas-studio','text'); if(h) return new Response(h,{headers:{'Content-Type':'text/html;charset=UTF-8',...c}}); } catch {} }
+    if (p === '/write') { try { const h = await env.STORE.get('writing-studio','text'); if(h) return new Response(h,{headers:{'Content-Type':'text/html;charset=UTF-8',...c}}); } catch {} }
     if (p === '/' || p === '') return new Response(HTML, {headers:{'Content-Type':'text/html;charset=utf-8','Content-Security-Policy':"frame-ancestors 'self' https://blackroad.io https://*.blackroad.io",...c}});
     // ─── Creative Campaign Inspiration Pages ───
     const BB_CAMPAIGNS = [
